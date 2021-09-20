@@ -54,3 +54,4 @@ dkms.conf
 #ide
 .vscode
 .idea
+cmake-build-debug
