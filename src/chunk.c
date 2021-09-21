@@ -74,3 +74,17 @@ int getLine(Chunk* chunk, int offset) {
 
     return -1;
 }
+
+/**
+ * 写入 OP_CONSTANT_LANG 的 operand，小端序
+ * @param chunk
+ * @param value
+ * @param line
+ */
+void writeConstant(Chunk* chunk, Value value, int line) {
+    int index = addConstant(chunk, value);
+
+    writeChunk(chunk, index | 0, line);
+    writeChunk(chunk, index >> 8 | 0, line);
+    writeChunk(chunk, index >> 16 | 0, line);
+}

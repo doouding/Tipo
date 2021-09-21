@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "debug.h"
 #include "value.h"
@@ -19,12 +20,22 @@ static int simpleInstruction(const char* name, int offset) {
 
 static int constantInstruction(const char* name, Chunk* chunk, int offset) {
     // 获取常量所存储的索引
-    uint8_t constant = chunk->code[offset + 1];
-    printf("%-16s %4d ", name, constant);
-    printValue(chunk->constants.values[constant]);
+    int constant_idx;
+    int is_long_constant = strcmp(name, "OP_CONSTANT_LONG") == 0 ? 1 : 0;
+
+    if(is_long_constant) {
+        constant_idx = (int)chunk->code[offset + 1]
+                     | ((int)chunk->code[offset + 2] << 8)
+                     | ((int)chunk->code[offset + 3] << 16);
+    } else {
+        constant_idx = chunk->code[offset + 1];
+    }
+
+    printf("%-16s %4d ", name, constant_idx);
+    printValue(chunk->constants.values[constant_idx]);
     printf("\n");
 
-    return offset+2;
+    return is_long_constant ? offset + 4 : offset + 2;
 }
 
 int disassembleInstruction(Chunk* chunk, int offset) {
@@ -44,6 +55,8 @@ int disassembleInstruction(Chunk* chunk, int offset) {
             return simpleInstruction("OP_RETURN", offset);
         case OP_CONSTANT:
             return constantInstruction("OP_CONSTANT", chunk, offset);
+        case OP_CONSTANT_LONG:
+            return constantInstruction("OP_CONSTANT_LONG", chunk, offset);
         default:
             printf("Unknown opcode %d\n", instruction);
             return offset + 1;
