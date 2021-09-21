@@ -22,7 +22,7 @@ void writeChunk(Chunk* chunk, uint8_t byte, int line) {
         chunk->code = GROW_ARRAY(uint8_t, chunk->code, oldCapacity, chunk->capacity);
     }
 
-    writeLine(chunk, chunk->count, line);
+    writeLineNo(chunk, chunk->count, line);
     chunk->code[chunk->count] = byte;
     chunk->count++;
 }
@@ -39,7 +39,7 @@ int addConstant(Chunk* chunk, Value value) {
     return chunk->constants.count - 1;
 }
 
-void writeLine(Chunk* chunk, int offset, int line) {
+void writeLineNo(Chunk* chunk, int offset, int line) {
     // 如果最后一个行信息的 line 和准备写入的 line 的行数一样
     // 则直接 count + 1 即可
     if(chunk->line_capacity > 0) {

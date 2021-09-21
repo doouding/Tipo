@@ -32,7 +32,7 @@ void writeChunk(Chunk* chunk, uint8_t byte, int line);
 
 int addConstant(Chunk* chunk, Value value);
 
-void writeLine(Chunk* chunk, int offset, int line);
+void writeLineNo(Chunk* chunk, int offset, int line);
 int getLine(Chunk* chunk, int offset);
 
 #endif
